@@ -10,29 +10,38 @@ namespace Exc_CS_9.Lists {
 		private int height;
 		private Random rnd;
 
-		public SkipList() {
+		public SkipList(Random rnd) {
+			Init();
+			this.rnd = rnd;
+		}
+
+		public SkipList() : this(new Random()) {	}
+
+		public void Clear() {
+			Init();
+		}
+
+		private void Init() {
 			start = new SkipEntry(null);
 			start.List.AppendLast(new NodeInfo(start, null, null));
 			height = 0;
-			rnd = new Random();
-		}
-
-		public void Init() {
-			
-		}
-
-		public void Deinit() {
-
 		}
 
 		public void Print() {
+			String res = "";
 			LinkedListNode<NodeInfo> cur = start.List.Last;
 
 			while(cur != null) {
-				Console.Write(cur.Value.Parent.Value + ", ");
+				if(cur.Value.Parent.Value != null)
+					res += cur.Value.Parent.Value + ", ";
 
 				cur = cur.Value.Next;
 			}
+
+			if(res.Length >= 2)
+				res = res.Substring(0, res.Length - 2);
+
+			Console.WriteLine(res);
 		}
 
 		public void PrintDetails() {
@@ -88,10 +97,49 @@ namespace Exc_CS_9.Lists {
 		}
 
 		public void Delete(Int32 key) {
+			LinkedListNode<NodeInfo> cur = start.List.First;
+			for(int h = height; h >= 0; h--) {
+				LinkedListNode<NodeInfo> nextNode = cur.Value.Next;
+				Int32? nextVal = nextNode?.Value.Parent.Value;
 
+				//While does also terminate if nextVal is null
+				while(nextVal <= key) {
+					cur = nextNode;
+					nextNode = nextNode.Value.Next;
+					nextVal = nextNode?.Value.Parent.Value;
+
+					if(cur.Value.Parent.Value == key) {
+						DeleteEntry(cur.Value.Parent);
+						CleanHeight();
+						return;
+					}
+				}
+
+				cur = cur.Next;
+			}
+
+			return;
 		}
 
 		public bool Search(Int32 key) {
+			LinkedListNode<NodeInfo> cur = start.List.First;
+			for(int h = height; h >= 0; h--) {
+				LinkedListNode<NodeInfo> nextNode = cur.Value.Next;
+				Int32? nextVal = nextNode?.Value.Parent.Value;
+
+				//While does also terminate if nextVal is null
+				while(nextVal <= key) {
+					cur = nextNode;
+					nextNode = nextNode.Value.Next;
+					nextVal = nextNode?.Value.Parent.Value;
+
+					if(cur.Value.Parent.Value == key)
+						return true;
+				}
+
+				cur = cur.Next;
+			}
+
 			return false;
 		}
 
@@ -112,6 +160,36 @@ namespace Exc_CS_9.Lists {
 			for(int i = 0; i < diff; i++) {
 				start.List.AppendFirst(new NodeInfo(start, null, null));
 				height++;
+			}
+		}
+
+		private void DeleteEntry(SkipEntry e) {
+			LinkedListNode<NodeInfo> cur = e.List.First;
+
+			while(cur != null) {
+				NodeInfo iCur = cur.Value;
+				LinkedListNode<NodeInfo> prev = iCur.Prev;
+				LinkedListNode<NodeInfo> next = iCur.Next;
+
+				prev.Value.Next = next;
+				if(next != null)
+					next.Value.Prev = prev;
+
+				cur = cur.Next;
+			}
+		}
+
+		private void CleanHeight() {
+			LinkedListNode<NodeInfo> cur = start.List.First;
+
+			while(cur.Next != null) {
+				LinkedListNode<NodeInfo> next = cur.Next;
+				if(cur.Value.Next == null) {
+					start.List.DeleteValue(cur.Value);
+					height--;
+				}
+
+				cur = next;
 			}
 		}
 	}

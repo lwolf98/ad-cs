@@ -13,7 +13,8 @@ namespace Exc_CS_9.Lists {
 		}
 
 		public override string ToString() {
-			return "Value: " + Value + ", Height: " + (List.Size() - 1);
+			string val = Value == null ? "null" : Value.ToString();
+			return "Value: " + val + ", Height: " + (List.Size() - 1);
 		}
 
 		public ILinkedList<NodeInfo> List { get; set; }
