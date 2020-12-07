@@ -33,7 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Exc_CS_9.HashTable</StartupObject>
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,9 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HashTable.cs" />
+    <Compile Include="Lists\LinkedList\ILinkedList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Lists\LinkedList\LinkedListWrapper.cs" />
+    <Compile Include="Lists\NodeInfo.cs" />
+    <Compile Include="Lists\SkipEntry.cs" />
+    <Compile Include="Lists\SkipList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
